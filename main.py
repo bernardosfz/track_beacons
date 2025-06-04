@@ -10,21 +10,21 @@ TARGET_UUIDS = [
 async def main():
     targets = [uuid.lower().replace('-', '') for uuid in TARGET_UUIDS]
     print(f"Procurando {len(TARGET_UUIDS)} beacons")
-    
+
     while True:
-        devices = await BleakScanner.discover(timeout=5.0)
-        
-        for device in devices:
-            if device.metadata and 'manufacturer_data' in device.metadata:
-                if hasattr(device, 'rssi') and device.rssi > -70:
-                    for data in device.metadata['manufacturer_data'].values():
+        beacons = await BleakScanner.discover(timeout=5.0)
+        data_hora = datetime.datetime.now()
+
+        for b in beacons:
+            if 'manufacturer_data' in b.metadata:
+                if hasattr(b, 'rssi') and b.rssi > -70:
+                    for data in b.metadata['manufacturer_data'].values():
                         hex_data = data.hex()
                         for i, target in enumerate(targets):
                             if target in hex_data:
-                                timestamp = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                                print(f"[{timestamp}] Beacon encontrado: {TARGET_UUIDS[i]} (RSSI: {device.rssi})")
+                                print(f"[{data_hora}] Beacon encontrado: {TARGET_UUIDS[i]} (RSSI: {b.rssi})")
                                 break
-        
+
         await asyncio.sleep(1)
 
 if __name__ == "__main__":
