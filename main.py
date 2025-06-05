@@ -17,7 +17,7 @@ async def main():
 
         for b in beacons:
             if 'manufacturer_data' in b.metadata:
-                if hasattr(b, 'rssi') and b.rssi > -70:
+                if hasattr(b, 'rssi') and b.rssi > -49:
                     for data in b.metadata['manufacturer_data'].values():
                         hex_data = data.hex()
                         for i, target in enumerate(targets):
