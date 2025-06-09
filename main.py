@@ -43,8 +43,8 @@ async def main():
                                 message = "teste"
                                 #channel.basic_publish(exchange='track_beacons', routing_key='tracking', body=message, properties=pika.BasicProperties(delivery_mode=2))
                                 break
-                            else:
-                                serial_port.write(b"OFF\n")
+                else:
+                    serial_port.write(b"OFF\n")
 
         await asyncio.sleep(1)
 
