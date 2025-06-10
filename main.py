@@ -39,13 +39,10 @@ async def main():
                         for i, target in enumerate(targets):
                             if target in hex_data:
                                 print(f"[{data_hora}] Beacon encontrado: {TARGET_UUIDS[i]} (RSSI: {b.rssi})")
-                                serial_port.write(b"ON\n")
+                                serial_port.write(1)
                                 message = "teste"
                                 #channel.basic_publish(exchange='track_beacons', routing_key='tracking', body=message, properties=pika.BasicProperties(delivery_mode=2))
                                 break
-                else:
-                    serial_port.write(b"OFF\n")
-
         await asyncio.sleep(1)
 
 if __name__ == "__main__":
