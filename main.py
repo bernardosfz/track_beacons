@@ -18,12 +18,12 @@ TARGET_UUIDS = [
     "967D8C06-7E9D-44C3-9E12-43DCC0E6C1F6"
 ]
 
-#parameters = pika.URLParameters(RABBIT_CONFIG)
-#connection = pika.BlockingConnection(parameters)
-#channel = connection.channel()
+parameters = pika.URLParameters(RABBIT_CONFIG)
+connection = pika.BlockingConnection(parameters)
+channel = connection.channel()
 
-#channel.exchange_declare(exchange='track_beacons', exchange_type='topic', durable=True)
-#channel.queue_declare(queue='tracking')
+channel.exchange_declare(exchange='track_beacons', exchange_type='topic', durable=True)
+channel.queue_declare(queue='tracking')
 
 async def main():
     targets = [uuid.lower().replace('-', '') for uuid in TARGET_UUIDS]
@@ -50,7 +50,7 @@ async def main():
                                     "mac": b.address
                                 }
                                 print(message)
-                                #channel.basic_publish(exchange='track_beacons',routing_key='tracking',body=json.dumps(message),properties=pika.BasicProperties(delivery_mode=2))
+                                channel.basic_publish(exchange='track_beacons',routing_key='tracking',body=json.dumps(message),properties=pika.BasicProperties(delivery_mode=2))
                                 break
         await asyncio.sleep(1)
 
