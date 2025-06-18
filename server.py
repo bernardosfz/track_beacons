@@ -25,7 +25,7 @@ def inicia_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT,
         uuid TEXT UNIQUE,
-        mac TEXT
+        mac TEXT UNIQUE
     )''')
     
     cursor.execute('''
@@ -71,7 +71,7 @@ def callback(ch, method, properties, body):
         
         antena_id = message.get('antena')
         datahora = message.get('datahora')
-        beacon_uuid = message.get('beacon')
+        beacon_uuid = message.get('beacon_uuid')
         beacon_nome = message.get('beacon_nome')
         rssi = message.get('rssi')
         mac = message.get('mac')
