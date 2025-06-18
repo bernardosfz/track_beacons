@@ -2,12 +2,12 @@ import pika
 import json
 import sqlite3
 import os
-from datetime import datetime
+import datetime
 from config import RABBIT_CONFIG
 
 DB_PATH = 'tracking_database.db'
 
-def init_database():
+def inicia_db():
     db_exists = os.path.exists(DB_PATH)
     
     conn = sqlite3.connect(DB_PATH)
@@ -46,7 +46,7 @@ def init_database():
     conn.commit()
     conn.close()
 
-def get_or_create_beacon(uuid, nome, mac):
+def cria_beacon(uuid, nome, mac):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
@@ -58,7 +58,7 @@ def get_or_create_beacon(uuid, nome, mac):
     else:
         cursor.execute("INSERT INTO BEACON (uuid, nome, mac) VALUES (?, ?, ?)", 
                       (uuid, nome, mac))
-        beacon_id = cursor.lastrowid
+        beacon_id = cursor.lastrowid #retorna ultima linha inserida pelo cursor
     
     conn.commit()
     conn.close()
@@ -79,7 +79,7 @@ def callback(ch, method, properties, body):
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         
-        beacon_id = get_or_create_beacon(beacon_uuid, beacon_nome, mac)
+        beacon_id = cria_beacon(beacon_uuid, beacon_nome, mac)
         
         cursor.execute("INSERT INTO TRACKING (datahora, beacon_id, antena_id, rssi) VALUES (?, ?, ?, ?)",
                       (datahora, beacon_id, antena_id, rssi))
@@ -115,5 +115,5 @@ def main():
         print("Saiu")
 
 if __name__ == "__main__":
-    init_database()
+    inicia_db()
     main()
