@@ -1,3 +1,4 @@
+
 # 📡 Sistema de Rastreamento de Beacons BLE
 
 Este projeto consiste em um sistema de rastreamento de **beacons BLE** (Bluetooth Low Energy) utilizando antenas baseadas em **Raspberry Pi**. As antenas capturam os sinais Bluetooth dos beacons e enviam esses dados para uma fila de mensageria na nuvem, onde são processados, armazenados em um banco de dados e disponibilizados por meio de uma API.
@@ -41,16 +42,62 @@ pika==1.3.2
 serial==0.0.97
 pyserial==3.5
 flask==3.1.1
+```
 
-```plaintext
+## 🏁 Como Executar o Projeto
+
+1. **Clone o repositório:**
+
+```bash
 git clone https://github.com/seu-usuario/nome-do-repositorio.git
 cd nome-do-repositorio
+```
 
-```plaintext
+2. **Crie um ambiente virtual (recomendado):**
+
+```bash
 python -m venv venv
 source venv/bin/activate  # Linux ou MacOS
-venv\Scripts\activate     # Windows
+venv\Scriptsctivate     # Windows
+```
 
-```plaintext
+3. **Instale as dependências:**
+
+```bash
 pip install -r requirements.txt
+```
 
+4. **Configure o RabbitMQ:**
+
+- Crie uma conta no [CloudAMQP](https://www.cloudamqp.com/) (ou outro serviço RabbitMQ na nuvem).
+- Atualize as credenciais no arquivo `config.py` (ou onde estiver definida a configuração da conexão com RabbitMQ).
+
+5. **Execute os scripts:**
+
+- Para **captura dos sinais BLE** e envio para RabbitMQ:
+
+```bash
+python main.py
+```
+
+- Para **consumir as mensagens do RabbitMQ** e salvar no banco de dados:
+
+```bash
+python server.py
+```
+
+- Para **iniciar a API Flask:**
+
+```bash
+python api.py
+```
+
+## 👥 Desenvolvedores
+
+- Bernardo Sozo Fattini  
+- Gabriel Pradegan Orsatto  
+- Henrique Daros Pavão  
+- Jean Folle Vanz  
+- Otavio Augusto Lorenzatto  
+
+---
