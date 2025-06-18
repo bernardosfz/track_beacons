@@ -49,8 +49,8 @@ flask==3.1.1
 1. **Clone o repositório:**
 
 ```bash
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
-cd nome-do-repositorio
+git clone https://github.com/bernardosfz/track_beacons.git
+cd track_beacons
 ```
 
 2. **Crie um ambiente virtual (recomendado):**
