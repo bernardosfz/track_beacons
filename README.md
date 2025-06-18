@@ -58,7 +58,7 @@ cd nome-do-repositorio
 ```bash
 python -m venv venv
 source venv/bin/activate  # Linux ou MacOS
-venv\Scriptsctivate     # Windows
+venv\Scripts\Activate     # Windows
 ```
 
 3. **Instale as dependências:**
@@ -94,10 +94,10 @@ python api.py
 
 ## 👥 Desenvolvedores
 
-- Bernardo Sozo Fattini  
-- Gabriel Pradegan Orsatto  
-- Henrique Daros Pavão  
-- Jean Folle Vanz  
-- Otavio Augusto Lorenzatto  
+- Bernardo Sozo Fattini  RA: 1134300
+- Gabriel Pradegan Orsatto  RA: 1135097
+- Henrique Daros Pavão  RA: 1135569
+- Jean Folle Vanz  RA: 1134254
+- Otavio Augusto Lorenzatto  RA: 1134984
 
 ---
