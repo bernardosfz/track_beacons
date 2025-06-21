@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Track Beacons</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #3a3333;
+            margin: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .filters {
+            margin-bottom: 20px;
+        }
+        .filters label {
+            margin-right: 10px;
+            
+        }
+        .filters input, .filters select {
+            margin-right: 20px;
+            padding: 5px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        table {
+            width: 100%; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard de Rastreamento</h1>
+
+        <div class="filters">
+            <label>Data Início: <input type="date" id="dataInicio"></label>
+            <label>Data Fim: <input type="date" id="dataFim"></label>
+            <label>Antena:
+                <select id="antenaSelect">
+                    <option value="">Todas</option>
+                </select>
+            </label>
+            <label>Beacon:
+                <select id="beaconSelect">
+                    <option value="">Todos</option>
+                </select>
+            </label>
+            <button onclick="getTracking()">Pesquisar</button>
+        </div>
+
+        <table id="trackingTable" class="display">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>DataHora</th>
+                    <th>Antena</th>
+                    <th>Beacon</th>
+                    <th>RSSI</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        const antenas = [
+            { id: 1, nome: "Antena 1", local: "Sala de Aula" },
+            { id: 2, nome: "Antena 2", local: "Corredor" },
+        ];
+
+        const beacons = [
+            { id: 1, nome: "Celular Sozo", uuid: "2F234454-CF6D-4A0F-ADF2-F4911BA9FFA6" },
+            { id: 2, nome: "Celular Otavio", uuid: "967D8C06-7E9D-44C3-9E12-43DCC0E6C1F6" },
+        ];
+
+        const tracking = [
+            { id: 1, datahora: "2025-06-20 10:15:00", antena_id: 1, beacon_id: 1, rssi: -47 },
+            { id: 2, datahora: "2025-06-20 10:17:00", antena_id: 2, beacon_id: 1, rssi: -35 },
+            { id: 3, datahora: "2025-06-20 10:20:00", antena_id: 1, beacon_id: 2, rssi: -20 },
+            { id: 4, datahora: "2025-06-21 09:00:00", antena_id: 2, beacon_id: 2, rssi: -25 },
+            { id: 5, datahora: "2025-06-22 10:15:00", antena_id: 1, beacon_id: 1, rssi: -47 },
+            { id: 6, datahora: "2025-06-22 10:17:00", antena_id: 2, beacon_id: 1, rssi: -35 },
+            { id: 7, datahora: "2025-06-23 10:20:00", antena_id: 1, beacon_id: 2, rssi: -20 },
+            { id: 8, datahora: "2025-06-23 09:00:00", antena_id: 2, beacon_id: 2, rssi: -25 },
+            { id: 9, datahora: "2025-06-24 10:15:00", antena_id: 1, beacon_id: 1, rssi: -47 },
+            { id: 10, datahora: "2025-06-24 10:17:00", antena_id: 2, beacon_id: 1, rssi: -35 },
+            { id: 11, datahora: "2025-06-25 10:20:00", antena_id: 1, beacon_id: 2, rssi: -20 },
+            { id: 12, datahora: "2025-06-25 09:00:00", antena_id: 2, beacon_id: 2, rssi: -25 },
+        ];
+
+        $(document).ready(function() {
+            $('#trackingTable').DataTable();
+            getAntenas();
+            getBeacons();
+            getTracking();
+        });
+
+        function getAntenas() {
+            const select = document.getElementById('antenaSelect');
+            antenas.forEach(antena => {
+                const option = document.createElement('option');
+                option.value = antena.id;
+                option.text = `${antena.nome} - (${antena.local})`;
+                select.appendChild(option);
+            });
+        }
+
+        function getBeacons() {
+            const select = document.getElementById('beaconSelect');
+            beacons.forEach(beacon => {
+                const option = document.createElement('option');
+                option.value = beacon.id;
+                option.text = `${beacon.nome} - (${beacon.uuid})`;
+                select.appendChild(option);
+            });
+        }
+
+        function getTracking() {
+            const dataInicio = document.getElementById('dataInicio').value;
+            const dataFim = document.getElementById('dataFim').value;
+            const antenaId = document.getElementById('antenaSelect').value;
+            const beaconId = document.getElementById('beaconSelect').value;
+
+            const table = new DataTable('#trackingTable');
+            table.clear();
+
+            let filtrado = tracking.filter(item => {
+                let valido = true;
+
+                if (dataInicio) {
+                    valido = valido && item.datahora >= dataInicio;
+                }
+                if (dataFim) {
+                    valido = valido && item.datahora <= dataFim + ' 23:59:59';
+                }
+                if (antenaId) {
+                    valido = valido && item.antena_id == antenaId;
+                }
+                if (beaconId) {
+                    valido = valido && item.beacon_id == beaconId;
+                }
+
+                return valido;
+            });
+
+            filtrado.forEach(registro => {
+                const antena = antenas.find(a => a.id == registro.antena_id);
+                const beacon = beacons.find(b => b.id == registro.beacon_id);
+
+                table.row.add([
+                    registro.id,
+                    registro.datahora,
+                    antena ? antena.local : registro.antena_id,
+                    beacon ? beacon.nome : registro.beacon_id,
+                    registro.rssi
+                ]);
+            });
+
+            table.draw();
+        }
+    </script>
+</body>
+</html>
