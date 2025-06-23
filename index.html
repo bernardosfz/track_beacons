@@ -72,102 +72,85 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
+
     <script>
-        const antenas = [
-            { id: 1, nome: "Antena 1", local: "Sala de Aula" },
-            { id: 2, nome: "Antena 2", local: "Corredor" },
-        ];
-
-        const beacons = [
-            { id: 1, nome: "Celular Sozo", uuid: "2F234454-CF6D-4A0F-ADF2-F4911BA9FFA6" },
-            { id: 2, nome: "Celular Otavio", uuid: "967D8C06-7E9D-44C3-9E12-43DCC0E6C1F6" },
-        ];
-
-        const tracking = [
-            { id: 1, datahora: "2025-06-20 10:15:00", antena_id: 1, beacon_id: 1, rssi: -47 },
-            { id: 2, datahora: "2025-06-20 10:17:00", antena_id: 2, beacon_id: 1, rssi: -35 },
-            { id: 3, datahora: "2025-06-20 10:20:00", antena_id: 1, beacon_id: 2, rssi: -20 },
-            { id: 4, datahora: "2025-06-21 09:00:00", antena_id: 2, beacon_id: 2, rssi: -25 },
-            { id: 5, datahora: "2025-06-22 10:15:00", antena_id: 1, beacon_id: 1, rssi: -47 },
-            { id: 6, datahora: "2025-06-22 10:17:00", antena_id: 2, beacon_id: 1, rssi: -35 },
-            { id: 7, datahora: "2025-06-23 10:20:00", antena_id: 1, beacon_id: 2, rssi: -20 },
-            { id: 8, datahora: "2025-06-23 09:00:00", antena_id: 2, beacon_id: 2, rssi: -25 },
-            { id: 9, datahora: "2025-06-24 10:15:00", antena_id: 1, beacon_id: 1, rssi: -47 },
-            { id: 10, datahora: "2025-06-24 10:17:00", antena_id: 2, beacon_id: 1, rssi: -35 },
-            { id: 11, datahora: "2025-06-25 10:20:00", antena_id: 1, beacon_id: 2, rssi: -20 },
-            { id: 12, datahora: "2025-06-25 09:00:00", antena_id: 2, beacon_id: 2, rssi: -25 },
-        ];
-
-        $(document).ready(function() {
+        let antenas = [];
+        let beacons = [];
+    
+        $(document).ready(function () {
             $('#trackingTable').DataTable();
-            getAntenas();
-            getBeacons();
-            getTracking();
+            carregarAntenas();
+            carregarBeacons();
         });
-
-        function getAntenas() {
-            const select = document.getElementById('antenaSelect');
-            antenas.forEach(antena => {
-                const option = document.createElement('option');
-                option.value = antena.id;
-                option.text = `${antena.nome} - (${antena.local})`;
-                select.appendChild(option);
-            });
+    
+        function carregarAntenas() {
+            fetch('http://127.0.0.1:5000/antenas')
+                .then(response => response.json())
+                .then(data => {
+                    antenas = data;
+                    const select = document.getElementById('antenaSelect');
+                    data.forEach(antena => {
+                        const option = document.createElement('option');
+                        option.value = antena.id;
+                        option.text = `${antena.nome} - (${antena.local})`;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Erro ao buscar antenas:', error));
         }
-
-        function getBeacons() {
-            const select = document.getElementById('beaconSelect');
-            beacons.forEach(beacon => {
-                const option = document.createElement('option');
-                option.value = beacon.id;
-                option.text = `${beacon.nome} - (${beacon.uuid})`;
-                select.appendChild(option);
-            });
+    
+        function carregarBeacons() {
+            fetch('http://127.0.0.1:5000/beacons')
+                .then(response => response.json())
+                .then(data => {
+                    beacons = data;
+                    const select = document.getElementById('beaconSelect');
+                    data.forEach(beacon => {
+                        const option = document.createElement('option');
+                        option.value = beacon.id;
+                        option.text = `${beacon.nome} - (${beacon.uuid})`;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Erro ao buscar beacons:', error));
         }
-
+    
         function getTracking() {
             const dataInicio = document.getElementById('dataInicio').value;
             const dataFim = document.getElementById('dataFim').value;
             const antenaId = document.getElementById('antenaSelect').value;
             const beaconId = document.getElementById('beaconSelect').value;
-
-            const table = new DataTable('#trackingTable');
-            table.clear();
-
-            let filtrado = tracking.filter(item => {
-                let valido = true;
-
-                if (dataInicio) {
-                    valido = valido && item.datahora >= dataInicio;
-                }
-                if (dataFim) {
-                    valido = valido && item.datahora <= dataFim + ' 23:59:59';
-                }
-                if (antenaId) {
-                    valido = valido && item.antena_id == antenaId;
-                }
-                if (beaconId) {
-                    valido = valido && item.beacon_id == beaconId;
-                }
-
-                return valido;
-            });
-
-            filtrado.forEach(registro => {
-                const antena = antenas.find(a => a.id == registro.antena_id);
-                const beacon = beacons.find(b => b.id == registro.beacon_id);
-
-                table.row.add([
-                    registro.id,
-                    registro.datahora,
-                    antena ? antena.local : registro.antena_id,
-                    beacon ? beacon.nome : registro.beacon_id,
-                    registro.rssi
-                ]);
-            });
-
-            table.draw();
+    
+            const params = new URLSearchParams();
+            if (dataInicio) params.append('data_inicio', dataInicio);
+            if (dataFim) params.append('data_fim', dataFim);
+            if (antenaId) params.append('antena_id', antenaId);
+            if (beaconId) params.append('beacon_id', beaconId);
+    
+            fetch(`http://127.0.0.1:5000/tracking?${params.toString()}`)
+                .then(response => response.json())
+                .then(tracking => {
+                    const table = new DataTable('#trackingTable');
+                    table.clear();
+    
+                    tracking.forEach(registro => {
+                        const antena = antenas.find(a => a.id == registro.antena_id);
+                        const beacon = beacons.find(b => b.id == registro.beacon_id);
+    
+                        table.row.add([
+                            registro.id,
+                            registro.datahora,
+                            antena ? antena.local : registro.antena_id,
+                            beacon ? beacon.nome : registro.beacon_id,
+                            registro.rssi
+                        ]);
+                    });
+    
+                    table.draw();
+                })
+                .catch(error => console.error('Erro ao buscar tracking:', error));
         }
     </script>
-</body>
+    
+    </body>
 </html>
