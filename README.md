@@ -42,6 +42,7 @@ pika==1.3.2
 serial==0.0.97
 pyserial==3.5
 flask==3.1.1
+flask-cors==6.0.1
 ```
 
 ## 🏁 Como Executar o Projeto
