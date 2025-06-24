@@ -9,8 +9,8 @@ import time
 
 antena = 1
 
-#serial_port_name = '/dev/ttyACM0'
-#serial_port = serial.Serial(serial_port_name, 9600)
+serial_port_name = '/dev/ttyACM0'
+serial_port = serial.Serial(serial_port_name, 9600)
 time.sleep(2)
 
 BEACONS = {
@@ -43,7 +43,7 @@ async def main():
                             if target in hex_data:
                                 uuid_detectado = uuid_values[i]
                                 beacon_nome = next(nome for nome, uuid in BEACONS.items() if uuid == uuid_detectado)
-                                #serial_port.write(b"1\n")
+                                serial_port.write(b"1\n")
                                 message = {
                                     "antena": antena,
                                     "datahora": data_hora,
