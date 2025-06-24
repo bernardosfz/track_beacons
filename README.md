@@ -16,7 +16,7 @@ Este projeto consiste em um sistema de rastreamento de **beacons BLE** (Bluetoot
 - **Python** – Linguagem principal do projeto.
 - **BLEAK** – Biblioteca para comunicação com dispositivos Bluetooth BLE.
 - **Pika** – Cliente Python para RabbitMQ (mensageria).
-- **PySerial** – Comunicação com dispositivos seriais, se necessário.
+- **PySerial** – Comunicação com dispositivos conectados a portas seriais.
 - **Flask** – Framework utilizado para construção da API REST.
 - **SQLite** – Banco de dados local e leve para persistência dos dados.
 
@@ -31,7 +31,7 @@ Este projeto consiste em um sistema de rastreamento de **beacons BLE** (Bluetoot
 ## 📦 Requisitos
 
 - Python 3.10 ou superior
-- Raspberry Pi com Bluetooth habilitado (para as antenas)
+- Raspberry Pi com Bluetooth habilitado (para as antenas) e conectado a internet
 
 ### 📜 Dependências (requirements.txt)
 
@@ -70,8 +70,8 @@ pip install -r requirements.txt
 
 4. **Configure o RabbitMQ:**
 
-- Crie uma conta no [CloudAMQP](https://www.cloudamqp.com/) (ou outro serviço RabbitMQ na nuvem).
-- Atualize as credenciais no arquivo `config.py` (ou onde estiver definida a configuração da conexão com RabbitMQ).
+- Crie uma conta no [CloudAMQP](https://www.cloudamqp.com/) (serviço RabbitMQ na nuvem).
+- Atualize as credenciais no arquivo `config.py` (ou onde estiver definida a configuração com o RabbitMQ).
 
 5. **Execute os scripts:**
 
